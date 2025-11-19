@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex McKay: Class Projects</title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Dark Grey/Black background */
+            min-height: 100vh;
+        }
+        /* Custom scrollbar for aesthetics on dark theme */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-thumb {
+            background-color: #ef4444; /* Red accent */
+            border-radius: 4px;
+        }
+        body::-webkit-scrollbar-track {
+            background-color: #1f2937;
+        }
+    </style>
+</head>
+<body class="text-gray-100 bg-gray-900">
+
+    <!-- Navigation Bar (Dark Header) -->
+    <nav class="bg-gray-800 shadow-2xl sticky top-0 z-50 border-b border-red-600/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo/Project Title -->
+                <div class="flex-shrink-0 text-red-500 text-2xl font-extrabold tracking-wide">
+                    <a href="#" onclick="showPage('home'); return false;" class="hover:text-red-400 transition duration-150">
+                        <span class="hidden sm:inline">CS Projects Portfolio</span>
+                        <span class="sm:hidden">Comp-Sci and App Development </span>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="flex space-x-2 sm:space-x-4">
+                    <a id="nav-home" href="#" onclick="showPage('home')"
+                       class="nav-link text-gray-100 hover:bg-red-600 px-3 py-2 rounded-lg text-sm font-medium transition duration-150 ease-in-out"
+                       data-page="home">Projects</a>
+                    <a id="nav-about" href="#" onclick="showPage('about')"
+                       class="nav-link text-gray-100 hover:bg-red-600 px-3 py-2 rounded-lg text-sm font-medium transition duration-150 ease-in-out"
+                       data-page="about">About</a>
+                    <a id="nav-contact" href="#" onclick="showPage('contact')"
+                       class="nav-link text-gray-100 hover:bg-red-600 px-3 py-2 rounded-lg text-sm font-medium transition duration-150 ease-in-out"
+                       data-page="contact">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- 1. Projects/Home Page Content -->
+        <div id="page-home" class="page-content bg-gray-800 shadow-2xl rounded-2xl p-6 md:p-10 transition duration-500 ease-in-out transform">
+            <h1 class="text-4xl font-extrabold text-red-500 mb-6 border-b-4 pb-2 border-gray-700">
+                Introduction to CS & App Development Projects
+            </h1>
+            <p class="text-lg text-gray-400 mb-10">
+Below is a list and links to all the games created by Alexander McKay, class of '26.              </p>
+
+            <!-- Project Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Project Card 1: Data Analyzer -->
+                <div class="bg-gray-700 border border-red-700/50 rounded-xl shadow-xl hover:shadow-red-500/30 transition duration-300 overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <!-- Icon for Data/Python -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd" />
+                            </svg>
+                            <h2 class="text-xl font-bold text-gray-100">Snoopy Clicker</h2>
+                        </div>
+                        
+                        <p class="text-gray-400 mb-4">
+Snoopy Clicker is a timed fast paced game. There high score is infinate. Attached below is the code and details about how the game was created and how it is played.                        </p>
+                        <ul class="text-sm text-gray-500 space-y-1">
+                            <li><span class="font-semibold text-gray-300">Tech:</span> Python, CSV File Handling</li>
+                            <li><span class="font-semibold text-gray-300">Concepts:</span> Sorting, Time Complexity, File I/O</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-900 p-4 border-t border-red-700/50 text-center">
+                        <a href="/Clicker.html" class="text-red-500 font-semibold hover:text-red-300 transition duration-150">View App Details &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Project Card 2: Mobile BMI Calculator App -->
+                <div class="bg-gray-700 border border-red-700/50 rounded-xl shadow-xl hover:shadow-red-500/30 transition duration-300 overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <!-- Icon for App/Mobile -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-2 3v-3H4a2 2 0 01-2-2V5z" />
+                                <path d="M15 7v2a4 4 0 01-4 4H9.84l6.591 3.8a1 1 0 001.368-.352A8 8 0 0017.95 9H15z" />
+                            </svg>
+                            <h2 class="text-xl font-bold text-gray-100">Tic-Tac-Toe</h2>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+A newly themed version of the classic game Tic-Tac-Toe.                      </p>
+                        <ul class="text-sm text-gray-500 space-y-1">
+                            <li><span class="font-semibold text-gray-300">Tech:</span> HTML, CSS, JavaScript</li>
+                            <li><span class="font-semibold text-gray-300">Concepts:</span> Input/Output, Conditional Logic, Data Validation</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-900 p-4 border-t border-red-700/50 text-center">
+                        <a href="/Tic-Tac-Toe.html" class="text-red-500 font-semibold hover:text-red-300 transition duration-150">View App Demo &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Project Card 3: Interactive Web Quiz -->
+                <div class="bg-gray-700 border border-red-700/50 rounded-xl shadow-xl hover:shadow-red-500/30 transition duration-300 overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <!-- Icon for Web/HTML -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.227l.798-.799a1 1 0 000-1.414l-2.091-2.091a1 1 0 00-1.414 0l-2.091 2.091a1 1 0 000 1.414l.798.799H5a2 2 0 01-2-2V5zm5 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                            </svg>
+                            <h2 class="text-xl font-bold text-gray-100">Click O' Domeder</h2>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+Click O'Dometer is a game that tracks the amount of clicks the player makes throughout the games time.                        </p>
+                        <ul class="text-sm text-gray-500 space-y-1">
+                            <li><span class="font-semibold text-gray-300">Tech:</span> HTML, Tailwind CSS, JavaScript DOM</li>
+                            <li><span class="font-semibold text-gray-300">Concepts:</span> User Events, Loops, DOM Manipulation</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-900 p-4 border-t border-red-700/50 text-center">
+                        <a href="/ClickODometer.html" class="text-red-500 font-semibold hover:text-red-300 transition duration-150">Start Quiz &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            <!-- End Project Grid -->
+
+        </div>
+
+        <!-- 2. About Page Content -->
+        <div id="page-about" class="page-content bg-gray-800 shadow-2xl rounded-2xl p-6 md:p-10 transition duration-500 ease-in-out transform hidden">
+            <h1 class="text-4xl font-extrabold text-red-500 mb-4 border-b-4 pb-2 border-gray-700">About the Class</h1>
+
+            <div class="text-lg text-gray-400 space-y-6">
+                <p>
+                    This portfolio represents the knowledge gained in our **Introduction to Computer Science and App Development** course. The curriculum emphasized computational thinking, fundamental data structures, and the basic architecture of web and mobile applications.
+                </p>
+                <p>
+                    The purpose of this website project was to demonstrate proficiency in integrating **HTML, CSS, and JavaScript** to create a **responsive** and functional user interface. We focused on making the content accessible across various devices, reflecting modern web development best practices.
+                </p>
+                <p class="font-semibold text-red-500">
+                    Team Member: [Your Name] - Role: Full Stack Developer (for this portfolio site)
+                </p>
+            </div>
+        </div>
+
+        <!-- 3. Contact Page Content -->
+        <div id="page-contact" class="page-content bg-gray-800 shadow-2xl rounded-2xl p-6 md:p-10 transition duration-500 ease-in-out transform hidden">
+            <h1 class="text-4xl font-extrabold text-red-500 mb-4 border-b-4 pb-2 border-gray-700">Project Inquiry & Contact</h1>
+
+            <p class="text-lg text-gray-400 mb-8">
+                If you have questions about the projects, the code's implementation, or the design rationale, please use the contact form below.
+            </p>
+
+            <div class="max-w-xl mx-auto p-8 bg-gray-700 rounded-xl shadow-xl">
+                <!-- Contact Form Mockup -->
+                <form class="space-y-5">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-200 mb-1">Your Name</label>
+                        <input type="text" id="name" name="name" placeholder="Professor Smith"
+                               class="w-full p-3 border border-gray-600 bg-gray-800 text-gray-100 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150 shadow-inner">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-200 mb-1">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="professor@university.edu"
+                               class="w-full p-3 border border-gray-600 bg-gray-800 text-gray-100 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150 shadow-inner">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-200 mb-1">Project Inquiry</label>
+                        <textarea id="message" name="message" rows="4" placeholder="I'd like to know more about the data analyzer project..."
+                                  class="w-full p-3 border border-gray-600 bg-gray-800 text-gray-100 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150 shadow-inner"></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" onclick="alertSubmission(event)"
+                                class="w-full bg-red-600 text-white font-semibold py-3 rounded-lg hover:bg-red-700 transition duration-200 shadow-lg shadow-red-500/30 transform hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-700">
+                            Submit Inquiry
+                        </button>
+                    </div>
+                </form>
+                <!-- Submission Message Box (Non-alert replacement) -->
+                <div id="submission-message" class="mt-5 p-4 bg-green-900/50 border border-green-500 text-green-300 rounded-lg hidden text-center" role="alert">
+                    <!-- Dynamic success message appears here -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript for Page Switching and Interactivity -->
+    <script>
+        // The core function to handle 'page' visibility
+        function showPage(pageId) {
+            // 1. Hide all page content containers
+            const allPages = document.querySelectorAll('.page-content');
+            allPages.forEach(page => {
+                page.classList.add('hidden');
+            });
+
+            // 2. Show the requested page
+            const currentPage = document.getElementById('page-' + pageId);
+            if (currentPage) {
+                currentPage.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // 3. Update the navigation link appearance
+            const allNavLinks = document.querySelectorAll('.nav-link');
+            allNavLinks.forEach(link => {
+                // Remove active styling (Red BG) from all links
+                link.classList.remove('bg-red-600');
+            });
+
+            // Add active styling to the current link
+            const activeNavLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+            if (activeNavLink) {
+                activeNavLink.classList.add('bg-red-600');
+            }
+        }
+
+        // Function to simulate form submission and show success message (No alert/confirm)
+        function alertSubmission(event) {
+            event.preventDefault(); // Stop the form from actually submitting/reloading
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            const messageBox = document.getElementById('submission-message');
+
+            // Reset box classes
+            messageBox.classList.remove('hidden', 'bg-red-900/50', 'text-red-300', 'bg-green-900/50', 'text-green-300');
+
+            if (name && email && message) {
+                messageBox.textContent = `Success! Thank you, ${name}. Your inquiry has been received (simulated submission).`;
+                messageBox.classList.add('bg-green-900/50', 'text-green-300');
+
+                // Reset form fields after simulation
+                document.querySelector('form').reset();
+            } else {
+                 messageBox.textContent = "Error: Please ensure all required fields are filled out before submitting.";
+                 messageBox.classList.add('bg-red-900/50', 'text-red-300');
+            }
+
+            // Hide the message after a few seconds
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 4000);
+        }
+
+        // Initialize the page view on load
+        window.onload = () => {
+            showPage('home');
+        };
+    </script>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-6 bg-gray-800 text-center text-gray-500 text-sm border-t border-red-600/50">
+        <p>&copy; 2025 CS Project Portfolio. Built for Intro to App Dev.</p>
+    </footer>
+
+</body>
+</html>
