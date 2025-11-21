@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Deep Dive: <div Tic-Tac-Toe=""></div></title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Near-black background */
+            min-height: 100vh;
+        }
+        /* Custom style for the code block */
+        .code-box {
+            font-family: 'Fira Code', monospace;
+            background-color: #1f2937; /* Darker grey for contrast */
+            border: 1px solid #374151; /* Subtle border */
+        }
+        /* Style for the demonstration video container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            background-color: #374151;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        /* Placeholder styling for better visual */
+        .placeholder {
+            background-color: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 1rem;
+            border: 2px dashed #4b5563;
+        }
+    </style>
+</head>
+<body class="text-gray-100 bg-gray-900 pb-12">
+
+    <!-- Header and Navigation Link -->
+    <header class="bg-gray-800 py-4 border-b border-red-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold text-red-500">Tic-Tac-Toe</h1>
+            <!-- Mock Link back to main portfolio -->
+            <a href="/index.html" class="text-gray-400 hover:text-red-500 transition duration-150 text-sm font-medium">
+                &larr; Back to Main Portfolio
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-12">
+
+        <!-- Section 1: Overview and Image -->
+        <section class="grid lg:grid-cols-3 gap-8 p-8 bg-gray-800 rounded-xl shadow-2xl shadow-gray-900/50">
+            <!-- Project Description -->
+            <div class="lg:col-span-2 space-y-6">
+                <h2 class="text-3xl font-bold text-red-500 border-b border-gray-700 pb-2">Tic-Tac-Toe</h2>
+                <p class="text-lg text-gray-400">
+This is Alex's take on the classic game Tic-Tac-Toe.                 </p>
+                <p class="text-gray-400">
+This game is themed for Pascack Hills High School.                </p>
+                <!-- Key Metrics / Tags -->
+                <div class="pt-4 flex flex-wrap gap-3">
+                    <span class="bg-gray-700 text-red-400 text-sm font-semibold px-4 py-1 rounded-full">Huffman Coding</span>
+                    <span class="bg-gray-700 text-red-400 text-sm font-semibold px-4 py-1 rounded-full">Binary Trees</span>
+                    <span class="bg-gray-700 text-red-400 text-sm font-semibold px-4 py-1 rounded-full">Python 3</span>
+                    <span class="bg-gray-700 text-red-400 text-sm font-semibold px-4 py-1 rounded-full">File I/O</span>
+                </div>
+            </div>
+
+            <!-- Project Image Placeholder -->
+            <div class="lg:col-span-1">
+                <h3 class="text-xl font-semibold text-gray-200 mb-3 border-b border-gray-700 pb-1">Visual Demonstration</h3>
+                <div class="w-full aspect-square rounded-lg shadow-xl overflow-hidden placeholder h-64">
+                    <img src="/Tic Tac Toe.png">
+                </div>
+                <p class="mt-3 text-sm text-gray-500 text-center">Figure 1: Console output showing compression ratio results.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Code Implementation -->
+       
+
+</code></pre>
+            </div>
+            <button onclick="copyCode()" class="bg-red-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-red-700 transition duration-150 transform hover:scale-[1.01] active:scale-[0.99]">
+                Copy Code to Clipboard
+            </button>
+            <div id="copy-message" class="hidden mt-3 text-sm text-green-400">Code copied successfully!</div>
+        </section>
+
+        <!-- Section 3: Video Demonstration -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-bold text-red-500 border-b border-gray-700 pb-2">Sample Run Demonstration Video</h2>
+            <div class="video-container rounded-xl shadow-2xl shadow-gray-900/50">
+                 <!-- VIDEO EMBED CODE SLOT -->
+                <div class="placeholder text-2xl">
+                    [Video Placeholder] Insert your video embed code here (e.g., from YouTube or a simple video file).
+                </div>
+                <!-- Example of an iframe for a YouTube video:
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Project Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                -->
+            </div>
+            <p class="text-gray-400 text-sm">
+                The video above demonstrates a complete run: file loading, tree generation, and the final output comparison of the compressed vs. original file size.
+            </p>
+        </section>
+
+    </main>
+
+    <script>
+        function copyCode() {
+            const codeElement = document.querySelector('.code-box code');
+            // Create a temporary textarea to hold the code content
+            const textarea = document.createElement('textarea');
+            textarea.value = codeElement.textContent;
+            document.body.appendChild(textarea);
+            
+            // Select and copy the text
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Clean up
+            document.body.removeChild(textarea);
+
+            // Show confirmation message
+            const copyMessage = document.getElementById('copy-message');
+            copyMessage.classList.remove('hidden');
+            setTimeout(() => {
+                copyMessage.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
