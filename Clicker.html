@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Detail: Data Analyzer Tool</title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Near-black background */
+            min-height: 100vh;
+        }
+        /* Custom style for the code block */
+        .code-box {
+            font-family: 'Fira Code', monospace;
+            background-color: #1f2937; /* Darker grey for contrast */
+            border: 1px solid #374151; /* Subtle border */
+        }
+    </style>
+</head>
+<body class="text-gray-100 bg-gray-900 pb-12">
+
+    <!-- Header and Navigation Link -->
+    <header class="bg-gray-800 py-4 border-b border-red-600/50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-red-500">Project: Snoopy Clicker</h1>
+            <!-- Mock Link back to main portfolio -->
+            <a href="/index.html" class="text-gray-300 hover:text-red-500 transition duration-150 text-sm font-medium">
+                &larr; Back to Portfolio Showcase
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-12">
+
+        <!-- Section 1: Description and Purpose (Two Columns) -->
+        <section class="grid lg:grid-cols-3 gap-8 bg-gray-800 p-8 rounded-xl shadow-xl">
+            <!-- Column 1: Description & Purpose -->
+            <div class="lg:col-span-2 space-y-6">
+                <h2 class="text-3xl font-bold text-red-500 border-b border-gray-700 pb-2">Description and Purpose</h2>
+                <p class="text-lg text-gray-400">
+Snoopy Clicker is the third game Alex Created. It is themed after the famous Peanuts character, Snoopy.                 </p>
+                <ul class="list-disc list-inside text-gray-400 space-y-2 pl-4">
+                </ul>
+                <div class="pt-4">                </div>
+            </div>
+
+            <!-- Column 2: Visual Asset Placeholder -->
+            <div class="lg:col-span-1 bg-gray-700 rounded-lg p-4 border border-red-700/50 flex flex-col items-center justify-center">
+        </section>
+
+        <!-- Section 2: Project Code -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-bold text-red-500 border-b border-gray-700 pb-2">Core Project Code</h2>
+            <img src="Clicker.png">
+            <div class="code-box p-6 rounded-xl shadow-2xl overflow-x-auto">
+                <pre class="text-sm leading-relaxed text-gray-200 whitespace-pre-wrap">
+<code class="language-python">
+
+
+</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 3: Video Demonstration -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-bold text-red-500 border-b border-gray-700 pb-2">Video</h2>
+            <div class="w-full bg-gray-700 rounded-xl p-6 border border-gray-600">
+                 <!-- Video Embed Placeholder -->
+                <div class="aspect-video w-full bg-gray-600 rounded-lg flex items-center justify-center text-gray-400 text-center p-8">
+                    <p class="text-lg">
+                        <iframe src="/test video.mp4" frameborder="0" allowfullscreen></iframe>
+                        <!-- [Video Placeholder] Embed a video demonstrating the project.
+                        <br> (e.g., using a link to YouTube, Vimeo, or a local `.mp4` if supported by your platform.)
+                        <br> **Example Embed Code Slot:** <code>&lt;iframe src="" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;</code> -->
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-6 bg-gray-800 text-center text-gray-500 text-sm border-t border-gray-700">
+        <p>Developed by [Your Name] for Intro to Computer Science & App Development.</p>
+    </footer>
+
+</body>
+</html>
