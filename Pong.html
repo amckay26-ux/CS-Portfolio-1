@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyper Pong</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* --- Custom CSS for Game Aesthetics --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate dark background */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #e2e8f0;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #10b981; /* Green title */
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            font-weight: 800;
+        }
+
+        #gameCanvas {
+            border: 4px solid #10b981;
+            background-color: #1e293b; /* Darker blue-grey arena */
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+        }
+
+        .info-bar {
+            width: 600px;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+        .score-board {
+            color: #10b981;
+        }
+
+        /* Message Box */
+        .message-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 41, 59, 0.95);
+            padding: 30px 40px;
+            border: 3px solid #10b981;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.7);
+            z-index: 1000;
+            display: none;
+            width: 80%;
+            max-width: 400px;
+        }
+        .message-box button {
+            background-color: #10b981;
+            color: #0f172a;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .message-box button:hover {
+            background-color: #059669;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>HYPER PONG</h1>
+
+    <div class="info-bar">
+        <span id="playerScoreDisplay" class="score-board text-blue-400">Player: 0</span>
+        <span id="aiScoreDisplay" class="score-board text-red-400">AI: 0</span>
+    </div>
+
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+    <div class="mt-4 text-sm text-gray-400">
+        Controls: **Up/Down Arrows** or **W/S** to move your paddle.
+    </div>
+    
+    <!-- Game Over/Start Message Box -->
+    <div id="messageBox" class="message-box">
+        <h2 id="messageTitle" class="text-2xl font-bold mb-3 text-white"></h2>
+        <p id="messageText" class="mb-4 text-gray-300"></p>
+        <button id="startButton">Start Game</button>
+    </div>
+
+    <script>
+        // --- Setup and Constants ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const playerScoreDisplay = document.getElementById('playerScoreDisplay');
+        const aiScoreDisplay = document.getElementById('aiScoreDisplay');
+        const messageBox = document.getElementById('messageBox');
+        const messageTitle = document.getElementById('messageTitle');
+        const messageText = document.getElementById('messageText');
+        const startButton = document.getElementById('startButton');
+
+        const GAME_WIDTH = canvas.width;
+        const GAME_HEIGHT = canvas.height;
+        const PADDLE_WIDTH = 10;
+        const PADDLE_HEIGHT = 60;
+        const BALL_SIZE = 8;
+        const INITIAL_BALL_SPEED = 3;
+        const PADDLE_SPEED = 5;
+        const SPEED_INCREMENT_TIME = 5; // Seconds
+        const SPEED_INCREMENT_AMOUNT = 0.5;
+
+        // Game State
+        let game = {
+            running: false,
+            lastTime: 0,
+            deltaTime: 0,
+            speedTimer: 0,
+            playerScore: 0,
+            aiScore: 0
+        };
+
+        // Player (Left Paddle)
+        let player = {
+            x: 20,
+            y: GAME_HEIGHT / 2 - PADDLE_HEIGHT / 2,
+            dy: 0, // direction vector for continuous movement
+            score: 0,
+            color: '#3b82f6' // Blue
+        };
+
+        // AI (Right Paddle)
+        let ai = {
+            x: GAME_WIDTH - 20 - PADDLE_WIDTH,
+            y: GAME_HEIGHT / 2 - PADDLE_HEIGHT / 2,
+            score: 0,
+            color: '#f87171', // Red
+            difficulty: 0.7 // AI 'sluggishness' (lower = easier)
+        };
+
+        // Ball
+        let ball = {
+            x: GAME_WIDTH / 2,
+            y: GAME_HEIGHT / 2,
+            dx: INITIAL_BALL_SPEED,
+            dy: INITIAL_BALL_SPEED,
+            speed: INITIAL_BALL_SPEED,
+            color: '#ffffff'
+        };
+
+        // --- Drawing Functions ---
+
+        function drawRect(x, y, w, h, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, w, h);
+        }
+
+        function drawBall(x, y, size, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawGame() {
+            // Clear canvas
+            drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT, '#1e293b');
+
+            // Draw center dashed line
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+            ctx.moveTo(GAME_WIDTH / 2, 0);
+            ctx.lineTo(GAME_WIDTH / 2, GAME_HEIGHT);
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset line dash
+
+            // Draw Paddles
+            drawRect(player.x, player.y, PADDLE_WIDTH, PADDLE_HEIGHT, player.color);
+            drawRect(ai.x, ai.y, PADDLE_WIDTH, PADDLE_HEIGHT, ai.color);
+
+            // Draw Ball
+            drawBall(ball.x, ball.y, BALL_SIZE, ball.color);
+        }
+
+        // --- Game Logic ---
+
+        function resetBall(servingPlayer) {
+            ball.x = GAME_WIDTH / 2;
+            ball.y = GAME_HEIGHT / 2;
+            ball.speed = INITIAL_BALL_SPEED;
+
+            // Determine direction based on who scored
+            const direction = servingPlayer === 'player' ? 1 : -1;
+            
+            // Randomize starting vertical angle slightly
+            const angle = Math.random() * (Math.PI / 2) - (Math.PI / 4); // Between -45 and 45 degrees
+            ball.dx = ball.speed * Math.cos(angle) * direction;
+            ball.dy = ball.speed * Math.sin(angle);
+        }
+
+        function updateBall() {
+            // 1. Move Ball
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            // 2. Wall Collision (Top/Bottom)
+            if (ball.y < BALL_SIZE / 2 || ball.y > GAME_HEIGHT - BALL_SIZE / 2) {
+                ball.dy *= -1; // Reverse vertical direction
+                
+                // Keep ball within bounds
+                if (ball.y < BALL_SIZE / 2) ball.y = BALL_SIZE / 2;
+                if (ball.y > GAME_HEIGHT - BALL_SIZE / 2) ball.y = GAME_HEIGHT - BALL_SIZE / 2;
+            }
+
+            // 3. Goal Scoring (Left/Right)
+            if (ball.x < 0) {
+                // AI scores
+                game.aiScore++;
+                aiScoreDisplay.textContent = `AI: ${game.aiScore}`;
+                resetBall('ai');
+            } else if (ball.x > GAME_WIDTH) {
+                // Player scores
+                game.playerScore++;
+                playerScoreDisplay.textContent = `Player: ${game.playerScore}`;
+                resetBall('player');
+            }
+
+            // 4. Paddle Collisions
+
+            // Player Paddle (Left)
+            if (ball.dx < 0 && 
+                ball.x - BALL_SIZE / 2 <= player.x + PADDLE_WIDTH && 
+                ball.y >= player.y && ball.y <= player.y + PADDLE_HEIGHT &&
+                ball.x > player.x) 
+            {
+                // Ball hits the paddle
+                ball.dx *= -1;
+                
+                // Calculate hit position relative to the paddle center (-1 to 1)
+                const hitPos = (ball.y - (player.y + PADDLE_HEIGHT / 2)) / (PADDLE_HEIGHT / 2);
+                
+                // Adjust vertical speed based on hit position
+                // Use the current speed to maintain magnitude
+                ball.dy = ball.speed * hitPos;
+                ball.dx = Math.sqrt(ball.speed * ball.speed - ball.dy * ball.dy); // Recalculate dx to maintain speed magnitude
+                
+                ball.x = player.x + PADDLE_WIDTH + BALL_SIZE / 2; // Prevent ball sticking
+            }
+
+            // AI Paddle (Right)
+            if (ball.dx > 0 && 
+                ball.x + BALL_SIZE / 2 >= ai.x && 
+                ball.y >= ai.y && ball.y <= ai.y + PADDLE_HEIGHT &&
+                ball.x < ai.x) 
+            {
+                // Ball hits the paddle
+                ball.dx *= -1;
+                
+                const hitPos = (ball.y - (ai.y + PADDLE_HEIGHT / 2)) / (PADDLE_HEIGHT / 2);
+                
+                ball.dy = ball.speed * hitPos;
+                ball.dx = -Math.sqrt(ball.speed * ball.speed - ball.dy * ball.dy); 
+                
+                ball.x = ai.x - BALL_SIZE / 2; // Prevent ball sticking
+            }
+        }
+
+        function updatePlayerPaddle() {
+            // Apply continuous movement based on player.dy
+            player.y += player.dy;
+
+            // Constrain movement within vertical bounds
+            if (player.y < 0) player.y = 0;
+            if (player.y > GAME_HEIGHT - PADDLE_HEIGHT) player.y = GAME_HEIGHT - PADDLE_HEIGHT;
+        }
+
+        function updateAIPaddle() {
+            const targetY = ball.y - PADDLE_HEIGHT / 2; // Aim for the center of the ball
+            
+            // Calculate the distance to the target
+            const deltaY = targetY - ai.y;
+            
+            // Adjust AI speed for 'forgiveness' (difficulty)
+            // AI moves only a fraction of the distance towards the ball
+            ai.y += deltaY * ai.difficulty * 0.1; // 0.1 is a smoothing factor
+
+            // Constrain movement within vertical bounds
+            if (ai.y < 0) ai.y = 0;
+            if (ai.y > GAME_HEIGHT - PADDLE_HEIGHT) ai.y = GAME_HEIGHT - PADDLE_HEIGHT;
+        }
+
+        function increaseBallSpeed() {
+            ball.speed += SPEED_INCREMENT_AMOUNT;
+            
+            // Recalculate ball direction vectors to maintain the current direction but use the new speed magnitude
+            const directionX = Math.sign(ball.dx);
+            const directionY = Math.sign(ball.dy);
+            const angle = Math.atan2(ball.dy, ball.dx);
+            
+            // Calculate new dx and dy based on the new speed and existing angle
+            ball.dx = ball.speed * Math.cos(angle);
+            ball.dy = ball.speed * Math.sin(angle);
+            
+            // Log speed increase
+            console.log(`Ball Speed increased to: ${ball.speed.toFixed(2)}`);
+        }
+        
+        // --- Input Handling ---
+
+        function handleKeydown(event) {
+            if (!game.running) return;
+
+            switch (event.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    player.dy = -PADDLE_SPEED;
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    player.dy = PADDLE_SPEED;
+                    break;
+            }
+        }
+
+        function handleKeyup(event) {
+            if (!game.running) return;
+
+            switch (event.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    if (player.dy < 0) player.dy = 0;
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    if (player.dy > 0) player.dy = 0;
+                    break;
+            }
+        }
+        
+        // --- Game Flow Control ---
+
+        function mainLoop(timestamp) {
+            if (!game.running) return;
+
+            // Calculate Delta Time in seconds
+            game.deltaTime = (timestamp - game.lastTime) / 1000;
+            game.lastTime = timestamp;
+
+            // Speed Increase Timer
+            game.speedTimer += game.deltaTime;
+            if (game.speedTimer >= SPEED_INCREMENT_TIME) {
+                increaseBallSpeed();
+                game.speedTimer = 0;
+            }
+
+            // 1. Update Logic
+            updatePlayerPaddle();
+            updateAIPaddle();
+            updateBall();
+
+            // 2. Draw
+            drawGame();
+
+            // 3. Loop
+            requestAnimationFrame(mainLoop);
+        }
+
+        function startGame() {
+            // Reset state
+            game.running = true;
+            game.playerScore = 0;
+            game.aiScore = 0;
+            game.speedTimer = 0;
+            
+            playerScoreDisplay.textContent = `Player: 0`;
+            aiScoreDisplay.textContent = `AI: 0`;
+            
+            messageBox.style.display = 'none';
+            resetBall('player'); // Start by serving to the AI
+            
+            game.lastTime = performance.now();
+            requestAnimationFrame(mainLoop);
+        }
+
+        function showStartScreen() {
+            messageTitle.textContent = "HYPER PONG";
+            messageText.innerHTML = "Classic Pong with adaptive difficulty. Beat the AI to 10 points!";
+            startButton.textContent = "Start Game";
+            messageBox.style.display = 'block';
+            drawGame(); // Draw initial screen
+        }
+
+        // --- Event Listeners and Initialization ---
+
+        startButton.addEventListener('click', startGame);
+        document.addEventListener('keydown', handleKeydown);
+        document.addEventListener('keyup', handleKeyup);
+
+        window.onload = function() {
+            resetBall('player'); // Initialize ball position
+            showStartScreen();
+        };
+
+    </script>
+</body>
+</html>
