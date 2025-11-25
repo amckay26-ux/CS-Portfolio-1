@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometry Dash Clone</title>
+    
+    <style>
+        /* --- CSS Styling --- */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a; /* Dark background */
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            user-select: none;
+        }
+
+        h1 {
+            color: #00ffff; /* Cyan-like bright color */
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        #gameCanvas {
+            border: 5px solid #00ffff;
+            background-color: #333333; /* Dark gray for the sky/background */
+            display: block;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); 
+        }
+
+        .info-bar {
+            width: 600px; /* Match canvas width */
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .message-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px 60px;
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 30px #ff0000;
+            z-index: 100;
+            display: none; /* Hidden by default */
+        }
+        
+        .message-box h2 {
+            margin-top: 0;
+            color: #ff0000;
+        }
+        
+        .message-box button {
+            background-color: #00ffff;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .message-box button:hover {
+            background-color: #00dddd;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>CUBIC DASH</h1>
+
+    <div class="info-bar">
+        <span id="score">Distance: 0</span>
+        <span id="instructions">Press SPACE or Click to Jump</span>
+    </div>
+
+    <canvas id="gameCanvas" width="600" height="300"></canvas>
+
+    <div id="messageBox" class="message-box">
+        <h2 id="messageTitle">Game Over!</h2>
+        <p id="messageText">You traveled 0 units. Try again!</p>
+        <button id="startButton">Play Again</button>
+    </div>
+
+    <script>
+        // --- Game Setup ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const messageBox = document.getElementById('messageBox');
+        const messageTitle = document.getElementById('messageTitle');
+        const messageText = document.getElementById('messageText');
+        const startButton = document.getElementById('startButton');
+
+        // Game State
+        let gameRunning = false;
+        let score = 0;
+        let lastTime = 0;
+        let deltaTime = 0;
+        let obstacleTimer = 0;
+        let spawnInterval = 1500; // milliseconds
+
+        // --- Constants ---
+        const GROUND_Y = canvas.height - 30;
+        const GRAVITY = 1500; // pixels/sec^2
+        const JUMP_VELOCITY = -500; // pixels/sec
+        const GAME_SPEED = 200; // pixels/sec (horizontal scrolling speed)
+        
+        // --- Player Object (Cube) ---
+        let player = {
+            width: 30,
+            height: 30,
+            x: 50,
+            y: GROUND_Y - 30,
+            velocityY: 0,
+            onGround: true,
+            color: '#00ffff' // Cyan
+        };
+
+        // --- Obstacle Structure (Spikes) ---
+        let obstacles = [];
+
+        function createObstacle() {
+            // Simple triangle obstacle (spike)
+            const spikeHeight = 40;
+            const spikeWidth = 20;
+            
+            // Randomly choose the height (ground or low-air)
+            let yPos = GROUND_Y;
+            
+            obstacles.push({
+                x: canvas.width,
+                y: yPos,
+                width: spikeWidth,
+                height: spikeHeight,
+                color: '#ff0000', // Red
+                type: 'spike'
+            });
+        }
+        
+        // --- Drawing Functions ---
+
+        function drawPlayer() {
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+        }
+
+        function drawGround() {
+            ctx.strokeStyle = '#eeeeee'; // Light gray line
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, GROUND_Y);
+            ctx.lineTo(canvas.width, GROUND_Y);
+            ctx.stroke();
+        }
+
+        function drawObstacles() {
+            ctx.fillStyle = '#ff0000'; // Red for spikes
+            obstacles.forEach(obs => {
+                if (obs.type === 'spike') {
+                    // Draw a triangle (spike)
+                    ctx.beginPath();
+                    // Bottom left point
+                    ctx.moveTo(obs.x, obs.y);
+                    // Top middle point
+                    ctx.lineTo(obs.x + obs.width / 2, obs.y - obs.height);
+                    // Bottom right point
+                    ctx.lineTo(obs.x + obs.width, obs.y);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            });
+        }
+        
+        // --- Physics and Logic ---
+
+        function handleJump() {
+            if (player.onGround) {
+                player.velocityY = JUMP_VELOCITY;
+                player.onGround = false;
+            }
+        }
+
+        function updatePhysics() {
+            // Apply gravity
+            player.velocityY += GRAVITY * deltaTime;
+            player.y += player.velocityY * deltaTime;
+
+            // Check ground collision
+            const groundLimit = GROUND_Y - player.height;
+            if (player.y >= groundLimit) {
+                player.y = groundLimit;
+                player.velocityY = 0;
+                player.onGround = true;
+            }
+        }
+
+        function updateObstacles() {
+            // Move obstacles to the left based on game speed and delta time
+            obstacles.forEach(obs => {
+                obs.x -= GAME_SPEED * deltaTime;
+            });
+
+            // Remove off-screen obstacles (garbage collection)
+            obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+
+            // Obstacle Spawning logic
+            obstacleTimer += deltaTime * 1000;
+            if (obstacleTimer >= spawnInterval) {
+                createObstacle();
+                obstacleTimer = 0;
+                // Randomize next spawn interval slightly for variation
+                spawnInterval = 1000 + Math.random() * 1000; 
+            }
+        }
+
+        function checkCollision() {
+            for (let i = 0; i < obstacles.length; i++) {
+                const obs = obstacles[i];
+                
+                // Simplified AABB (Axis-Aligned Bounding Box) collision check
+                if (
+                    player.x < obs.x + obs.width &&
+                    player.x + player.width > obs.x &&
+                    // For spike collision, only check the player's bottom edge against the top of the spike
+                    player.y + player.height > obs.y - obs.height &&
+                    player.y < obs.y // General check to ensure player is not fully above the obstacle
+                ) {
+                    // Collision detected!
+                    gameOver();
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        function updateScore() {
+            // Score based on time/distance traveled
+            score += GAME_SPEED * deltaTime / 10;
+            scoreElement.textContent = `Distance: ${Math.floor(score)}`;
+        }
+
+        // --- Game Control ---
+
+        function gameOver() {
+            gameRunning = false;
+            messageTitle.textContent = "Game Over!";
+            messageText.textContent = `You traveled ${Math.floor(score)} units. Try again!`;
+            startButton.textContent = "Restart";
+            messageBox.style.display = 'block';
+        }
+
+        function startGame() {
+            score = 0;
+            player.y = GROUND_Y - player.height;
+            player.velocityY = 0;
+            player.onGround = true;
+            obstacles = [];
+            obstacleTimer = 0;
+            
+            messageBox.style.display = 'none';
+            gameRunning = true;
+            
+            // Start the loop
+            lastTime = performance.now();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // --- Event Listeners ---
+
+        document.addEventListener("keydown", (e) => {
+            if (e.code === "Space" && gameRunning) {
+                e.preventDefault(); // Prevent page scroll
+                handleJump();
+            }
+        });
+        
+        canvas.addEventListener("click", () => {
+            if (gameRunning) {
+                handleJump();
+            }
+        });
+
+        startButton.addEventListener('click', startGame);
+
+        // --- Main Game Loop ---
+
+        function gameLoop(timestamp) {
+            if (!gameRunning) return;
+
+            // Calculate delta time in seconds
+            deltaTime = (timestamp - lastTime) / 1000;
+            lastTime = timestamp;
+
+            // 1. Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Update Logic
+            updatePhysics();
+            updateObstacles();
+            if (checkCollision()) {
+                return; // Stop the loop immediately on collision
+            }
+            updateScore();
+            
+            // 3. Draw Elements
+            drawGround();
+            drawObstacles();
+            drawPlayer();
+
+            // 4. Loop
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Initial setup on load
+        window.onload = function() {
+            messageTitle.textContent = "Cubic Dash";
+            messageText.textContent = "Get ready to jump over the spikes! The game speed increases the longer you survive.";
+            startButton.textContent = "Start Game";
+            messageBox.style.display = 'block';
+            drawGround();
+            drawPlayer();
+        };
+
+    </script>
+</body>
+</html>
